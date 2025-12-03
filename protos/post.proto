@@ -1,34 +1,34 @@
 syntax = "proto3";
+
 package post;
-service PostService{
-    rpc CreatePost(PostRequest) returns (PostResponse);
-    rpc GetPostById(GetPostRequest) returns (GetPostResponse);
-    rpc GetAllPost(Empty) returns (PostList);
-    rpc UpdatePost (UpdatePostRequest) returns (PostResponse);
-    rpc DeletePost(GetPostRequest) returns (DeleteResponse);
+
+service PostService {
+  rpc CreatePost (PostRequest) returns (PostResponse);
+  rpc GetPostById (GetPostRequest) returns (PostResponse);
+  rpc GetAllPost (Empty) returns (PostList);
+  rpc UpdatePost (UpdatePostRequest) returns (PostResponse);
+  rpc DeletePost (GetPostRequest) returns (DeleteResponse);
 }
 
-
-message Post{
-    string id  =1 ;
-    string title = 2;
-    string caption = 3 ;
+message Post {
+  string id = 1;
+  string title = 2;
+  string caption = 3;
 }
 
-message PostRequest{
-    string title = 1;
-    string caption = 2;
+message PostRequest {
+  string title = 1;
+  string caption = 2;
 }
 
-
-message GetPostRequest{
-    string title = 1;
+message GetPostRequest {
+  string id = 1;  
 }
 
-message UpdatePostResponse{
-    string id = 1;
-    string title = 2;
-    string caption = 3;
+message UpdatePostRequest {
+  string id = 1;
+  string title = 2;
+  string caption = 3;
 }
 
 message Empty {}
@@ -37,11 +37,9 @@ message PostResponse {
   Post post = 1;
 }
 
-
 message PostList {
   repeated Post posts = 1;
 }
-
 
 message DeleteResponse {
   string message = 1;

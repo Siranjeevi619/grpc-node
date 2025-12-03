@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node src/server/grpcServer.js",
-    "client": "node src/client/grpcClient.js"
+    "start": "node server/grpcServer.js",
+    "client": "node client/grpcClient.js"
   },
   "keywords": [],
   "author": "",
