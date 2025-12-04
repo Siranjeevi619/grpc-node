@@ -1,6 +1,4 @@
-const postSchema = require("../schema/postschema.js");
-module.exports = postModel = require("mongoose").model(
-  "post",
-  postSchema,
-  "post-data"
-);
+const mongoose = require("mongoose");
+const postSchema = require("../schema/postschema");
+
+module.exports = mongoose.model("Post", postSchema);

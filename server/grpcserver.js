@@ -1,10 +1,11 @@
 const grpc = require("@grpc/grpc-js");
 const protoLoader = require("@grpc/proto-loader");
+const path = require("path");
 const connectDB = require("../config/db");
 const {
   CreatePost,
   GetPostById,
-  GetAllPosts,
+  GetAllPost,
   UpdatePost,
   DeletePost,
 } = require("../services/postService");
@@ -12,6 +13,9 @@ const {
 connectDB();
 
 const packageDef = protoLoader.loadSync("protos/post.proto");
+
+console.log(path.join(__dirname, "../protos/post.proto"));
+
 const grpcObject = grpc.loadPackageDefinition(packageDef);
 const postPackage = grpcObject.post;
 
@@ -20,7 +24,7 @@ const server = new grpc.Server();
 server.addService(postPackage.PostService.service, {
   CreatePost,
   GetPostById,
-  GetAllPosts,
+  GetAllPost,
   UpdatePost,
   DeletePost,
 });

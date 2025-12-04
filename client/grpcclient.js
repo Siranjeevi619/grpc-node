@@ -6,12 +6,12 @@ const grpcObj = grpc.loadPackageDefinition(packageDef);
 const PostService = grpcObj.post.PostService;
 
 const client = new PostService(
-  "localhost:50051",
+  "127.0.0.1:50051",
   grpc.credentials.createInsecure()
 );
 
 client.CreatePost(
-  { title: "Hello gRPC", content: "This is a new post!" },
+  { title: "Hello gRPC", caption: "This is a new post!" },
   (err, response) => {
     if (err) console.error(err);
     console.log("Created:", response);

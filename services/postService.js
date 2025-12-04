@@ -1,82 +1,95 @@
-const post = require("../model/postModel");
+const postModel = require("../model/postModel");
 
 async function CreatePost(call, callback) {
-  const { title, content } = call.request;
+  try {
+    const { title, caption } = call.request;
+    const newPost = await postModel.create({ title, caption });
 
-  const newPost = await Post.create({ title, content });
-
-  callback(null, {
-    post: {
-      id: newPost._id.toString(),
-      title: newPost.title,
-      content: newPost.content,
-    },
-  });
+    callback(null, {
+      post: {
+        id: newPost._id.toString(),
+        title: newPost.title,
+        caption: newPost.caption,
+      },
+    });
+  } catch (err) {
+    callback(err, null);
+  }
 }
 
 async function GetPostById(call, callback) {
-  const { id } = call.request;
+  try {
+    const { id } = call.request;
+    const post = await postModel.findById(id);
 
-  const post = await Post.findById(id);
+    if (!post) return callback(new Error("Post not found"));
 
-  if (!post) {
-    return callback(new Error("Post not found"));
+    callback(null, {
+      post: {
+        id: post._id.toString(),
+        title: post.title,
+        caption: post.caption,
+      },
+    });
+  } catch (err) {
+    callback(err, null);
   }
-
-  callback(null, {
-    post: {
-      id: post._id.toString(),
-      title: post.title,
-      content: post.content,
-    },
-  });
 }
 
-async function GetAllPosts(call, callback) {
-  const posts = await Post.find();
+async function GetAllPost(call, callback) {
+  try {
+    const posts = await postModel.find();
 
-  callback(null, {
-    posts: posts.map((p) => ({
-      id: p._id.toString(),
-      title: p.title,
-      content: p.content,
-    })),
-  });
+    callback(null, {
+      posts: posts.map((p) => ({
+        id: p._id.toString(),
+        title: p.title,
+        caption: p.caption,
+      })),
+    });
+  } catch (err) {
+    callback(err, null);
+  }
 }
 
 async function UpdatePost(call, callback) {
-  const { id, title, content } = call.request;
+  try {
+    const { id, title, caption } = call.request;
+    const updatedPost = await postModel.findByIdAndUpdate(
+      id,
+      { title, caption },
+      { new: true }
+    );
 
-  const updatedPost = await Post.findByIdAndUpdate(
-    id,
-    { title, content },
-    { new: true }
-  );
+    if (!updatedPost) return callback(new Error("Post not found"));
 
-  callback(null, {
-    post: {
-      id: updatedPost._id.toString(),
-      title: updatedPost.title,
-      content: updatedPost.content,
-    },
-  });
+    callback(null, {
+      post: {
+        id: updatedPost._id.toString(),
+        title: updatedPost.title,
+        caption: updatedPost.caption,
+      },
+    });
+  } catch (err) {
+    callback(err, null);
+  }
 }
 
 async function DeletePost(call, callback) {
-  const { id } = call.request;
+  try {
+    const { id } = call.request;
+    await postModel.findByIdAndDelete(id);
 
-  await Post.findByIdAndDelete(id);
-
-  callback(null, { message: "Post deleted successfully" });
+    callback(null, { message: "Post deleted successfully" });
+  } catch (err) {
+    callback(err, null);
+  }
 }
 
 module.exports = {
   CreatePost,
   GetPostById,
-  GetAllPosts,
+  GetAllPost,
   UpdatePost,
   DeletePost,
 };
-
-
-
