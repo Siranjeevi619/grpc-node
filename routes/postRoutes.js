@@ -6,11 +6,11 @@ const authMiddleware = require("../middleware/authMiddleware");
 router.post("/", authMiddleware, (req, res) => {
   const { title, caption } = req.body;
 
-  const createReq = { title, caption };
+  const createReq = { title, caption, userId: req.user.id };
 
   postClient.CreatePost(createReq, (err, response) => {
     if (err) {
-      console.error("🔥 CreatePost gRPC Error:", err);
+      console.error("CreatePost gRPC Error:", err);
       return res.status(500).json({ message: "Post service error" });
     }
 
@@ -20,7 +20,7 @@ router.post("/", authMiddleware, (req, res) => {
 
 router.get("/:id", (req, res) => {
   postClient.GetPostById({ id: req.params.id }, (err, response) => {
-    if (err) return res.status(500).json({ message: "Post service error" });
+    if (err) return res.status(500).json({ message: err.details });
 
     if (!response.post) return res.status(404).json({ message: "Not found" });
 
@@ -30,7 +30,28 @@ router.get("/:id", (req, res) => {
 
 router.get("/", (req, res) => {
   postClient.GetAllPost({}, (err, response) => {
-    if (err) return res.status(500).json({ message: "Post service error" });
+    if (err) return res.status(500).json({ message: err });
+
+    res.json(response.posts || []);
+  });
+});
+
+router.delete("/:id", (req, res) => {
+  postClient.DeletePost({ id: req.params.id }, (err, response) => {
+    if (err) return res.status(500).json({ message: err });
+    res.json(response || "Deleted Successfully");
+  });
+});
+
+
+router.get("/:userId/all-post", (req, res) => {
+  const { userId } = req.params;
+
+  postClient.GetPostsByUser({ userId }, (err, response) => {
+    if (err) {
+      console.error("GetPostsByUser Error:", err);
+      return res.status(500).json({ message: "Post service error" });
+    }
 
     res.json(response.posts || []);
   });

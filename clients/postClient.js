@@ -2,7 +2,6 @@ const grpc = require("@grpc/grpc-js");
 const protoLoader = require("@grpc/proto-loader");
 const path = require("path");
 
-// LOAD proto FROM grpc-post service
 const PROTO_PATH = path.join(
   __dirname,
   "..",
