@@ -1,6 +1,7 @@
 const express = require("express");
 const morgan = require("morgan");
 const cors = require("cors");
+const commentRoutes = require("./routes/commentRoutes");
 
 const app = express();
 
@@ -10,6 +11,7 @@ app.use(morgan("dev"));
 
 app.use("/auth", require("./routes/authRoutes"));
 app.use("/posts", require("./routes/postRoutes"));
+app.use("/comment", commentRoutes);
 
 app.listen(3000, () => {
   console.log("API Gateway running on port 3000");
