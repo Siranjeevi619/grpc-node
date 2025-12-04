@@ -2,14 +2,15 @@ const postModel = require("../model/postModel");
 
 async function CreatePost(call, callback) {
   try {
-    const { title, caption } = call.request;
-    const newPost = await postModel.create({ title, caption });
+    const { title, caption, userId } = call.request;
+    const newPost = await postModel.create({ title, caption, userId });
 
     callback(null, {
       post: {
         id: newPost._id.toString(),
         title: newPost.title,
         caption: newPost.caption,
+        userId: newPost.userId,
       },
     });
   } catch (err) {
@@ -78,6 +79,13 @@ async function UpdatePost(call, callback) {
 async function DeletePost(call, callback) {
   try {
     const { id } = call.request;
+    const existing = await postModel.findById(id);
+
+    if (!existing) {
+      return callback(null, {
+        message: "Post not found",
+      });
+    }
     await postModel.findByIdAndDelete(id);
 
     callback(null, { message: "Post deleted successfully" });
@@ -86,7 +94,27 @@ async function DeletePost(call, callback) {
   }
 }
 
+const GetPostsByUser = async (call, callback) => {
+  try {
+    const { userId } = call.request;
+
+    const posts = await postModel.find({ userId });
+
+    callback(null, {
+      posts: posts.map((p) => ({
+        id: p._id.toString(),
+        title: p.title,
+        caption: p.caption,
+        userId: p.userId,
+      })),
+    });
+  } catch (err) {
+    callback(err, null);
+  }
+};
+
 module.exports = {
+  GetPostsByUser,
   CreatePost,
   GetPostById,
   GetAllPost,
