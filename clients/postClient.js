@@ -2,9 +2,17 @@ const grpc = require("@grpc/grpc-js");
 const protoLoader = require("@grpc/proto-loader");
 const path = require("path");
 
-const PROTO_PATH = path.join(__dirname, "..", "protos", "post.proto");
+// LOAD proto FROM grpc-post service
+const PROTO_PATH = path.join(
+  __dirname,
+  "..",
+  "..",
+  "grpc-post",
+  "protos",
+  "post.proto"
+);
 
-const packageDefinition = protoLoader.loadSync(PROTO_PATH, {
+const pkgDef = protoLoader.loadSync(PROTO_PATH, {
   keepCase: true,
   longs: String,
   enums: String,
@@ -12,7 +20,7 @@ const packageDefinition = protoLoader.loadSync(PROTO_PATH, {
   oneofs: true,
 });
 
-const postProto = grpc.loadPackageDefinition(packageDefinition).post;
+const postProto = grpc.loadPackageDefinition(pkgDef).post;
 
 const client = new postProto.PostService(
   "localhost:50051",
