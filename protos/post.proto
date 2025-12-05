@@ -19,7 +19,7 @@ message GetUserPostRequest {
 
 message PostWithComments{
   Post post = 1;
-  repeated Comment comment = 2;
+  repeated Comment comments = 2;
 }
 
 message Post {

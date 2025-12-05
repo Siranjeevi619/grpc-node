@@ -39,6 +39,7 @@ async function GetPostById(call, callback) {
       caption: post.caption,
       userId: post.userId,
     };
+    console.log("Calling comment service for postId:", id);
 
     commentClient.GetCommentsByPost({ postId: id }, (err, commentResponse) => {
       if (err) {
@@ -50,10 +51,16 @@ async function GetPostById(call, callback) {
       }
 
       const comments = commentResponse?.comments || [];
+      console.log("commentResponse:", comments);
 
       return callback(null, {
         post: postData,
-        comments: comments,
+        comments: commentResponse.comments?.map((c) => ({
+          id: c.id,
+          postId: c.postId,
+          userId: c.userId,
+          text: c.text,
+        })),
       });
     });
   } catch (err) {
