@@ -1,3 +1,4 @@
+const commentClient = require("../client/commentClient");
 const postModel = require("../model/postModel");
 
 async function CreatePost(call, callback) {
@@ -21,16 +22,39 @@ async function CreatePost(call, callback) {
 async function GetPostById(call, callback) {
   try {
     const { id } = call.request;
+
     const post = await postModel.findById(id);
 
-    if (!post) return callback(new Error("Post not found"));
+    if (!post) {
+      return callback(null, {
+        post: null,
+        comments: [],
+        message: "Post not found",
+      });
+    }
 
-    callback(null, {
-      post: {
-        id: post._id.toString(),
-        title: post.title,
-        caption: post.caption,
-      },
+    const postData = {
+      id: post._id.toString(),
+      title: post.title,
+      caption: post.caption,
+      userId: post.userId,
+    };
+
+    commentClient.GetCommentsByPost({ postId: id }, (err, commentResponse) => {
+      if (err) {
+        console.error("Error fetching comments:", err);
+        return callback(null, {
+          post: postData,
+          comments: [],
+        });
+      }
+
+      const comments = commentResponse?.comments || [];
+
+      return callback(null, {
+        post: postData,
+        comments: comments,
+      });
     });
   } catch (err) {
     callback(err, null);

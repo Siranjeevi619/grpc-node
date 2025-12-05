@@ -1,0 +1,38 @@
+syntax = "proto3";
+
+package comment;
+
+service CommentService {
+  rpc AddComment (AddCommentRequest) returns (CommentResponse);
+  rpc GetCommentsByPost (PostIdRequest) returns (CommentList);
+  rpc GetCommentsByUser (UserIdRequest) returns (CommentList);
+}
+
+message AddCommentRequest {
+  string postId = 1;
+  string userId = 2;
+  string text = 3;
+}
+
+message Comment {
+  string id = 1;
+  string postId = 2;
+  string userId = 3;
+  string text = 4;
+}
+
+message CommentResponse {
+  Comment comment = 1;
+}
+
+message CommentList {
+  repeated Comment comments = 1;
+}
+
+message PostIdRequest {
+  string postId = 1;
+}
+
+message UserIdRequest {
+  string userId = 1;
+}
