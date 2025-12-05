@@ -12,6 +12,7 @@ const PROTO_PATH = path.join(
 );
 
 const pkgDef = protoLoader.loadSync(PROTO_PATH, {
+  includeDirs: [path.join(__dirname, "../../grpc-post/protos")],
   keepCase: true,
   longs: String,
   enums: String,

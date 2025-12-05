@@ -18,14 +18,21 @@ router.post("/", authMiddleware, (req, res) => {
   });
 });
 
-router.get("/:id", (req, res) => {
-  postClient.GetPostById({ id: req.params.id }, (err, response) => {
-    if (err) return res.status(500).json({ message: err.details });
+router.get("/:id", authMiddleware, (req, res) => {
+  postClient.GetPostById(
+    { id: req.params.id, userId: req.user.id },
+    (err, response) => {
+      if (err) return res.status(500).json({ message: err.details });
 
-    if (!response.post) return res.status(404).json({ message: "Not found" });
+      if (!response.post) return res.status(404).json({ message: "Not found" });
+      console.log("Gateway received response:", response);
 
-    res.json(response.post);
-  });
+      res.json({
+        post: response.post,
+        comments: response.comments || [],
+      });
+    }
+  );
 });
 
 router.get("/", (req, res) => {
@@ -42,7 +49,6 @@ router.delete("/:id", (req, res) => {
     res.json(response || "Deleted Successfully");
   });
 });
-
 
 router.get("/:userId/all-post", (req, res) => {
   const { userId } = req.params;
